@@ -24,7 +24,7 @@ Since we're running Spring Boot, there's no need to setup mvn, so just run:
 * [This service is using Jaxb2Marshaller to generate POJOs, marshall and unmarshall from the WSDL file:](https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/oxm/jaxb/Jaxb2Marshaller.html)
 * [Checkout the WSDL file on PayHost:](https://secure.paygate.co.za/payhost/process.trans?wsdl)
 * [You can further expand on this and use services like Apache Camel CXF and JBoss Fuse Tools, if you feel that Jaxb2 is not the way](https://access.redhat.com/documentation/en-us/red_hat_jboss_fuse/6.3/html/apache_camel_development_guide/implws-wsdlfirst)
-* [Feel free to contact if you have any questions](markmngoma@outlok.com)
+* Feel free to contact if you have any questions @ markmngoma@outlok.com
 
 
 ### Reference Documentation
