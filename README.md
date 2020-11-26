@@ -2,12 +2,11 @@
 
 ### Reference Documentation
 * This project is purely meant for Java beginners that need a reference to making soap calls in a simpler way.
-* NOTE: Nothing is being persisted to a database.
 * This is solely a quick setup.
 * We have 2 endpoints: 
- - POST: http://localhost:8080/pay-with/example {
+ - GET: http://localhost:{port}/transact/example {
         Meant to display the sample body.  }
- - POST: http://localhost:8080/pay-with/card {
+ - POST: http://localhost:{port}/transact/make-call {
         Add the body to post data to paygate.
     }
 * These are for card payments.
@@ -20,7 +19,7 @@ Since we're running Spring Boot, there's no need to setup mvn, so just run:
 * Make sure you set your environment to allow for the changes in the pom.xml file and IDE.
 * Allow for sources to synchronize and build
 * Run *./mvnw spring-boot:run* for quickstart OR
-* Run *./mvnw clean install* to compile a .jar
+* Run *./mvnw clean install* to compile a .jar or war
 * [This service is using Jaxb2Marshaller to generate POJOs, marshall and unmarshall from the WSDL file:](https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/oxm/jaxb/Jaxb2Marshaller.html)
 * [Checkout the WSDL file on PayHost:](https://secure.paygate.co.za/payhost/process.trans?wsdl)
 * [You can further expand on this and use services like Apache Camel CXF and JBoss Fuse Tools, if you feel that Jaxb2 is not the way](https://access.redhat.com/documentation/en-us/red_hat_jboss_fuse/6.3/html/apache_camel_development_guide/implws-wsdlfirst)
@@ -45,8 +44,8 @@ The following guides illustrate how to use some features concretely:
 * [Building REST services with Spring](https://spring.io/guides/tutorials/bookmarks/)
 * [Producing a SOAP web service](https://spring.io/guides/gs/producing-web-service/)
 
-### TO DO
-
 List :  
+### DONE
 * Setup a client to make callbacks and implement Spring Data JPA for persitance.
+### TO DO
 * Enpdoint for vault. 
