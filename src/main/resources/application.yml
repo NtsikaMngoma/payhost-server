@@ -1,0 +1,22 @@
+paygate:
+  id: 10011072130
+  password: test
+  endpoint: https://secure.paygate.co.za/payhost/process.trans
+  namespace:
+    uri: http://www.paygate.co.za/PayHOST
+  package:
+    name: za.co.paygate.payhost
+application:
+  name: payhost.server
+#server:
+#  port: 9995
+spring:
+  datasource:
+    url: jdbc:mysql://server.local:3306/pay_host
+    username: schemaManager
+    password: s3cretP@$$w0rd
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update

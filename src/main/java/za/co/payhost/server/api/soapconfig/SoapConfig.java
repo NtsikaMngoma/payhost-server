@@ -13,9 +13,9 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 @Configuration
 public class SoapConfig {
     
-    @Value("${paygate.package}")
+    @Value("${paygate.package.name}")
     private String payhostPackage;
-    
+
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySoapConfig() {
     	return new PropertySourcesPlaceholderConfigurer();

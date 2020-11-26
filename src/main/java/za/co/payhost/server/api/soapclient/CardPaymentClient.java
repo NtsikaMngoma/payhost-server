@@ -9,6 +9,7 @@ import org.springframework.ws.soap.client.core.SoapActionCallback;
 
 import za.co.paygate.payhost.SinglePaymentRequest;
 import za.co.paygate.payhost.SinglePaymentResponse;
+import za.co.payhost.server.api.service.dto.PaymentTransactionsDTO;
 
 /**
  * @author Ntsika Mngoma
@@ -23,10 +24,9 @@ public class CardPaymentClient {
 	@Value("${paygate.namespace.uri}")
 	private String namespace;
 	
-	
 	@Autowired
 	private Jaxb2Marshaller marshaller;
-	
+
 	public SinglePaymentResponse makePayment(SinglePaymentRequest request) {
 		WebServiceTemplate template = new WebServiceTemplate(marshaller);
 		return (SinglePaymentResponse) template.marshalSendAndReceive(
