@@ -9,7 +9,8 @@ import org.springframework.ws.soap.client.core.SoapActionCallback;
 
 import za.co.paygate.payhost.SinglePaymentRequest;
 import za.co.paygate.payhost.SinglePaymentResponse;
-import za.co.payhost.server.api.service.dto.PaymentTransactionsDTO;
+import za.co.paygate.payhost.SingleVaultRequest;
+import za.co.paygate.payhost.SingleVaultResponse;
 
 /**
  * @author Ntsika Mngoma
@@ -27,10 +28,24 @@ public class CardPaymentClient {
 	@Autowired
 	private Jaxb2Marshaller marshaller;
 
-	public SinglePaymentResponse makePayment(SinglePaymentRequest request) {
+	/**
+	 * @param request
+	 * @return {@link SinglePaymentResponse} response
+	 */
+	public SinglePaymentResponse cardPaymentService(SinglePaymentRequest request) {
 		WebServiceTemplate template = new WebServiceTemplate(marshaller);
 		return (SinglePaymentResponse) template.marshalSendAndReceive(
 				endpoint, request, 
 				new SoapActionCallback(namespace));
 	}
+	
+	/**
+	 * @param request {@link SingleVaultRequest} vaultId
+	 * @return {@link SingleVaultResponse}
+	 */
+	public SingleVaultResponse vaultService(SingleVaultRequest request) {
+		WebServiceTemplate template = new WebServiceTemplate(marshaller);
+		return (SingleVaultResponse) template.marshalSendAndReceive(endpoint, request,
+				new SoapActionCallback(namespace));
+ 	}
 }

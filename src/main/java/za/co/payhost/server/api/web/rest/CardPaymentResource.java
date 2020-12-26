@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import javax.validation.Valid;
 
 import za.co.paygate.payhost.*;
 import za.co.payhost.server.api.service.PaymentService;
+import za.co.payhost.server.api.service.SmsService;
 import za.co.payhost.server.api.service.dto.PaymentTransactionsDTO;
 import za.co.payhost.server.api.soapclient.CardPaymentClient;
 import za.co.payhost.server.api.utils.HeaderUtil;
@@ -41,16 +43,19 @@ public class CardPaymentResource {
 
 	@Value("${paygate.password}")
 	public String payGatePassword;
+	
 	@Value("${paygate.endpoint}")
 	public String payGateUrl;
 
 	private final CardPaymentClient cardPaymentClient;
 	private final PaymentService paymentService;
+	private final SmsService smsService;
 
 	@Autowired
-	public CardPaymentResource(CardPaymentClient cardPaymentClient, PaymentService paymentService) {
+	public CardPaymentResource(CardPaymentClient cardPaymentClient, PaymentService paymentService, SmsService smsService) {
 		this.cardPaymentClient = cardPaymentClient;
 		this.paymentService = paymentService;
+		this.smsService = smsService;
 	}
 
 	@GetMapping(value = "/example", produces = "application/json")
@@ -61,11 +66,34 @@ public class CardPaymentResource {
 	/**
 	 * @param request POST 
 	 * @return cardPaymentResponse
+	 * @throws JSONException 
+	 * @throws IOException 
 	 */
 	@PostMapping(value = "/make-call", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<SinglePaymentResponse> processPayment(@RequestBody SinglePaymentRequest request) {
-		return ResponseEntity.ok(cardPaymentClient.makePayment(request));
+    public ResponseEntity<SinglePaymentResponse> processPayment(@RequestBody SinglePaymentRequest request) throws IOException, JSONException {
+		SinglePaymentResponse responseString = cardPaymentClient.cardPaymentService(request);
+		String smsMessageString = responseString.getCardPaymentResponse().getStatus().getResultDescription();
+		smsService.sendSms(smsMessageString);
+		return ResponseEntity.ok(responseString);		
     }
+	
+	/**
+	 * @param vaultRequest
+	 * @return
+	 */
+	@PostMapping(value = "/vault-request", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<SingleVaultResponse> processVault(@RequestBody SingleVaultRequest vaultRequest) {
+		return ResponseEntity.ok(cardPaymentClient.vaultService(vaultRequest));
+	}
+	
+	/**
+	 * @param lookRequest
+	 * @return
+	 */
+	@GetMapping(value = "/vault-lookup", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<SingleVaultResponse> lookUpVaultIdByCreds(@RequestBody SingleVaultRequest lookRequest) {
+		return ResponseEntity.ok(cardPaymentClient.vaultService(lookRequest));
+	}
 
 	/**
 	 * {@code POST /transact} : Create a new transaction.

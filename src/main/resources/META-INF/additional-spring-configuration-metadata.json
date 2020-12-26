@@ -13,5 +13,40 @@
     "name": "paygate.package.name",
     "type": "java.lang.String",
     "description": "A description for 'paygate.package.name'"
+  },
+  {
+    "name": "application.name",
+    "type": "java.lang.String",
+    "description": "A description for 'application.name'"
+  },
+  {
+    "name": "paygate.password",
+    "type": "java.lang.String",
+    "description": "A description for 'paygate.password'"
+  },
+  {
+    "name": "paygate.id",
+    "type": "java.lang.String",
+    "description": "A description for 'paygate.id'"
+  },
+  {
+    "name": "smsportal.key",
+    "type": "java.lang.String",
+    "description": "A description for 'smsportal.key'"
+  },
+  {
+    "name": "smsportal.secret",
+    "type": "java.lang.String",
+    "description": "A description for 'smsportal.secret'"
+  },
+  {
+    "name": "smsportal.auth.address",
+    "type": "java.lang.String",
+    "description": "A description for 'smsportal.auth.address'"
+  },
+  {
+    "name": "smsportal.auth.message.request",
+    "type": "java.lang.String",
+    "description": "A description for 'smsportal.auth.message.request'"
   }
 ]}

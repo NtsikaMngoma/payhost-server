@@ -12,11 +12,19 @@ application:
 #  port: 9995
 spring:
   datasource:
-    url: jdbc:mysql://server.local:3306/pay_host
-    username: schemaManager
-    password: s3cretP@$$w0rd
+    url: jdbc:mysql://localhost:3306/pay_host
+    username: root
+    password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     show-sql: true
     hibernate:
       ddl-auto: update
+ 
+smsportal:
+  key: d96493bb-7dd1-4e9a-a6e4-719939013df6
+  secret: 711QsJjtOJgryYG9dwsbU+M2gR/agsLW
+  auth: 
+    address: https://rest.smsportal.com/v1/Authentication
+    message:
+      request: https://rest.smsportal.com/v1/bulkmessages

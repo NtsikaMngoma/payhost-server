@@ -55,5 +55,5 @@ public interface PaymentService {
      *
      * @param id the id of the entity
      */
-//    void delete(Long id);
+    void cardValidator(String cardNumber);
 }
