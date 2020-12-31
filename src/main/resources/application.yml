@@ -8,6 +8,8 @@ paygate:
     name: za.co.paygate.payhost
 application:
   name: payhost.server
+  notifyUrl: http://localhost:9000/payments/transaction/notify 
+  returnUrl: http://localhost:9000/payments/transaction/status
 #server:
 #  port: 9995
 spring:
@@ -20,6 +22,9 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+  mvc:
+    servlet:
+      path: /v1
  
 smsportal:
   key: d96493bb-7dd1-4e9a-a6e4-719939013df6

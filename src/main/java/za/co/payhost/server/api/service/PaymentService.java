@@ -1,10 +1,16 @@
 package za.co.payhost.server.api.service;
 
+import za.co.paygate.payhost.SinglePaymentRequest;
+import za.co.paygate.payhost.SinglePaymentResponse;
 import za.co.payhost.server.api.service.dto.PaymentTransactionsDTO;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 public interface PaymentService {
     /**
@@ -12,8 +18,9 @@ public interface PaymentService {
      *
      * @param paymentTransactionsDTO the entity to save
      * @return the persisted entity
+     * @throws DatatypeConfigurationException 
      */
-    PaymentTransactionsDTO save(PaymentTransactionsDTO paymentTransactionsDTO) throws IOException;
+    PaymentTransactionsDTO save(PaymentTransactionsDTO paymentTransactionsDTO, SinglePaymentRequest request) throws IOException, DatatypeConfigurationException;
 
     /**
      * Get all the paymentTransactions.
@@ -56,4 +63,10 @@ public interface PaymentService {
      * @param id the id of the entity
      */
     void cardValidator(String cardNumber);
+        
+    LocalDateTime transactionDateConversion() throws DatatypeConfigurationException;
+    
+    SinglePaymentResponse saveTransactionResults(SinglePaymentResponse response, PaymentTransactionsDTO transactions);
+
+	void appendRequests(SinglePaymentRequest request);
 }

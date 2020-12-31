@@ -1,7 +1,10 @@
 package za.co.payhost.server.api.service.impl;
 
+import org.springframework.stereotype.Service;
+
 import za.co.payhost.server.api.service.MailService;
 
+@Service
 public class MailServiceImpl implements MailService{
 	
 	@Override

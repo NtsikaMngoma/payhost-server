@@ -7,8 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.stereotype.Service;
 import org.springframework.util.Base64Utils;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
@@ -18,7 +18,7 @@ import com.squareup.okhttp.Response;
 
 import za.co.payhost.server.api.service.SmsService;
 
-
+@Service
 public class SmsServiceImpl implements SmsService {
     private final Logger log = LoggerFactory.getLogger(SmsServiceImpl.class);
 
@@ -31,7 +31,7 @@ public class SmsServiceImpl implements SmsService {
 	@Value("${smsportal.auth.address}")
 	public String authAddress;
 	
-	@Value("${smsportal.message.request}")
+	@Value("${smsportal.auth.message.request}")
 	public String messageRequestUri;
 
 	@Override
@@ -89,6 +89,12 @@ public class SmsServiceImpl implements SmsService {
 
 	@Override
 	public void sendOtp() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void saveSmsStatus() {
 		// TODO Auto-generated method stub
 		
 	}

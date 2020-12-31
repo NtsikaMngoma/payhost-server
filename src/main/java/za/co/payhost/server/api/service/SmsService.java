@@ -8,4 +8,5 @@ public interface SmsService {
 
 	void sendOtp();
 	void sendSms(String transactionStatusDescription) throws IOException, JSONException;
+	void saveSmsStatus();
 }

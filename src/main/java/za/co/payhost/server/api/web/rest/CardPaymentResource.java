@@ -9,22 +9,20 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-
 import za.co.paygate.payhost.*;
 import za.co.payhost.server.api.service.PaymentService;
 import za.co.payhost.server.api.service.SmsService;
 import za.co.payhost.server.api.service.dto.PaymentTransactionsDTO;
 import za.co.payhost.server.api.soapclient.CardPaymentClient;
-import za.co.payhost.server.api.utils.HeaderUtil;
+import za.co.payhost.server.api.utils.PaymentFailedException;
 import za.co.payhost.server.api.utils.ResponseUtil;
-import za.co.payhost.server.api.web.rest.exceptions.BadRequestAlertException;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+
+import javax.xml.datatype.DatatypeConfigurationException;
 
 /**
  * @author Ntsika Mngoma
@@ -37,12 +35,6 @@ public class CardPaymentResource {
 	private static final String ENTITY_NAME = "PaymentTransactions";
 	@Value("${application.name}")
 	private String applicationName;
-
-	@Value("${paygate.id}")
-	public String payGateId;
-
-	@Value("${paygate.password}")
-	public String payGatePassword;
 	
 	@Value("${paygate.endpoint}")
 	public String payGateUrl;
@@ -68,12 +60,20 @@ public class CardPaymentResource {
 	 * @return cardPaymentResponse
 	 * @throws JSONException 
 	 * @throws IOException 
+	 * @throws DatatypeConfigurationException 
 	 */
-	@PostMapping(value = "/make-call", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<SinglePaymentResponse> processPayment(@RequestBody SinglePaymentRequest request) throws IOException, JSONException {
+	@PostMapping(value = "/card-payment", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<SinglePaymentResponse> processPayment(@RequestBody SinglePaymentRequest request) throws IOException, JSONException, DatatypeConfigurationException {
 		SinglePaymentResponse responseString = cardPaymentClient.cardPaymentService(request);
-		String smsMessageString = responseString.getCardPaymentResponse().getStatus().getResultDescription();
+		String smsMessageString = responseString.getCardPaymentResponse().getStatus().getTransactionStatusDescription();
 		smsService.sendSms(smsMessageString);
+		smsService.saveSmsStatus();
+		PaymentTransactionsDTO paymentTransactionsDTO = new PaymentTransactionsDTO();
+		paymentService.saveTransactionResults(responseString, paymentTransactionsDTO);
+		paymentService.save(paymentTransactionsDTO, request);
+		if (paymentTransactionsDTO.getPaymentTypeId().equals(null) || paymentTransactionsDTO.getPayRequestId().equals(null)) {
+			throw new PaymentFailedException("Your payment could be processed");
+		}
 		return ResponseEntity.ok(responseString);		
     }
 	
@@ -93,47 +93,6 @@ public class CardPaymentResource {
 	@GetMapping(value = "/vault-lookup", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<SingleVaultResponse> lookUpVaultIdByCreds(@RequestBody SingleVaultRequest lookRequest) {
 		return ResponseEntity.ok(cardPaymentClient.vaultService(lookRequest));
-	}
-
-	/**
-	 * {@code POST /transact} : Create a new transaction.
-	 * @param transaction the transaction to create
-	 * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new operation, or with status {@code 400 (Bad Request)} if the transaction already has an ID.
-	 * @throws URISyntaxException if the Location URI syntax is not correct.
-	 */
-    @PostMapping(value = "/card-payment", produces = "application/json")
-	public ResponseEntity<PaymentTransactionsDTO> makePaymentTransaction(@Valid @RequestBody PaymentTransactionsDTO transaction) throws URISyntaxException, IOException {
-		log.debug("REST request to save transaction : {}", transaction);
-		if (transaction.getId() != null) {
-			throw new BadRequestAlertException("A new transaction cannot already have an ID", ENTITY_NAME, "idexists");
-		}
-		PaymentTransactionsDTO transactionResults = paymentService.save(transaction);
-		return ResponseEntity
-				.created(new URI("/pay-with/transaction/" + transactionResults.getId()))
-				.headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, transactionResults.getId().toString()))
-				.body(transactionResults);
-	}
-
-	/**
-	 * {@code PUT  /transact} : Updates an existing bankAccount.
-	 *
-	 * @param transaction the transaction to update.
-	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated transaction,
-	 * or with status {@code 400 (Bad Request)} if the transaction is not valid,
-	 * or with status {@code 500 (Internal Server Error)} if the transaction couldn't be updated.
-	 * @throws URISyntaxException if the Location URI syntax is incorrect.
-	 */
-	@PutMapping(value = "/card-payment")
-	public ResponseEntity<PaymentTransactionsDTO> updateTransactions(@Valid @RequestBody PaymentTransactionsDTO transaction) throws URISyntaxException, IOException {
-    	log.debug("REST request to update transaction : {}", transaction);
-    	if (transaction.getId() == null) {
-    		throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
-		}
-    	PaymentTransactionsDTO paymentTransaction = paymentService.save(transaction);
-    	return ResponseEntity
-				.ok()
-				.headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, transaction.getId().toString()))
-				.body(paymentTransaction);
 	}
 
 	@GetMapping(value = "/list-by-mail", produces = "application/json")

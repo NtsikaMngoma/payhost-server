@@ -48,5 +48,15 @@
     "name": "smsportal.auth.message.request",
     "type": "java.lang.String",
     "description": "A description for 'smsportal.auth.message.request'"
+  },
+  {
+    "name": "application.notifyUrl",
+    "type": "java.lang.String",
+    "description": "A description for 'application.notifyUrl'"
+  },
+  {
+    "name": "application.returnUrl",
+    "type": "java.lang.String",
+    "description": "A description for 'application.returnUrl'"
   }
 ]}
