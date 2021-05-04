@@ -27,8 +27,8 @@ spring:
       path: /v1
  
 smsportal:
-  key: d96493bb-7dd1-4e9a-a6e4-719939013df6
-  secret: 711QsJjtOJgryYG9dwsbU+M2gR/agsLW
+  key: get
+  secret: your-own
   auth: 
     address: https://rest.smsportal.com/v1/Authentication
     message:
